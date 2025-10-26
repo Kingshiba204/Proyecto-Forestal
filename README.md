@@ -1,86 +1,112 @@
-Proyecto Forestal
-Una aplicación Django para gestionar faenas de cosecha en distintos predios, con asignación opcional de operarios y predio activo por sesión.
+# 🌲 Proyecto Forestal: Módulo de Gestión de Faenas (TI2041 - Actividad N°4)
 
-Requisitos
-Python 3.10+ (se probó con 3.13)
-pip
-Virtualenv (recomendado)
-Django 5.2.x (versión usada en el proyecto)
-(Opcional, para producción) PostgreSQL / MySQL
-El repositorio contiene requirements.txt. Instala las dependencias con pip.
+> **Carrera:** Analista Programador
+> [cite_start]**Asignatura:** Programación Back End [cite: 2]
+> [cite_start]**Código/Sección:** T12041 [cite: 2]
+> [cite_start]**Docente:** German Mardones [cite: 2]
+> [cite_start]**Institución:** Inacap [cite: 3]
 
-Instalación (Windows PowerShell)
-Clona el repositorio: git clone https://github.com/Kingshiba204/Proyecto-Forestal.git
-cd Proyecto-Forestal
-Crear y activar un entorno virtual:
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-Instalar dependencias:
-pip install -r requirements.txt
+[cite_start]Esta es una aplicación web Django para administrar faenas de cosecha en distintos predios[cite: 4], enfocada en la administración interna y la gestión de permisos por sesión.
 
-Pasos de migración y creación de datos de prueba
-Crear migraciones:
-python manage.py makemigrations
+---
 
-Aplicar migraciones:
-python manage.py migrate
+## 🚀 Requisitos del Sistema
 
-Crear un superusuario (administrador):
-python manage.py createsuperuser
+* **Lenguaje:** Python 3.10+
+* **Framework:** Django 5.2.x (se usó la versión estable más reciente).
+* **Gestor de Paquetes:** `pip`
+* **Entorno:** `Virtualenv` (recomendado).
 
-Ejecución local
-Ejecutar servidor de desarrollo:
-python manage.py runserver
-Abrir en el navegador: http://127.0.0.1:8000/
-Panel admin: http://127.0.0.1:8000/admin/
+*(El repositorio debe contener el archivo `requirements.txt`.)*
 
-Usuario de prueba
-Usuario: admin
-Contraseña: admin123
+## 🛠️ Instalación y Ejecución (Windows PowerShell)
 
-Estructura y dónde se aplica cada requisito
-Templates
-Ubicación: faenas/templates/faenas/ y templates/registration/
-base.html contiene la plantilla base con navegación (bloques de contenido).
-Herencia de templates: las vistas usan {% extends "faenas/base.html" %}.
-CSRF: formularios incluyen {% csrf_token %}.
+### 1. Requisitos e Instalación
 
-Models
-Definidos en models.py.
-Modelos principales: Predio y Faena.
-Relaciones: Faena.predio = ForeignKey(Predio) (obligatoria); Faena.operario_asignado = ForeignKey(User, null=True, blank=True) (opcional).
-Faena incluye choices para estado (ej.: programada, en_ejecucion, finalizada, cancelada).
+1.  **Clonar el repositorio:**
+    ```bash
+    git clone [https://github.com/Kingshiba204/Proyecto-Forestal.git](https://github.com/Kingshiba204/Proyecto-Forestal.git)
+    cd Proyecto-Forestal
+    ```
+2.  **Crear y activar el entorno virtual:**
+    ```bash
+    python -m venv venv
+    .\venv\Scripts\Activate.ps1
+    ```
+3.  **Instalar dependencias:**
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-ORM
-Todas las consultas se realizan con Django ORM (no SQL crudo).
-Ejemplos en views.py:
-Filtrar por predio activo:
-Ordenamiento: .order_by('fecha_inicio', 'estado')
-Documentación del código: revisa los archivos views.py y models.py para ejemplos.
+### [cite_start]2. Pasos de Migración y Creación de Superusuario [cite: 43]
 
-Sessions
-Predio activo guardado en sesión: request.session['predio_activo'] = <predio_id>.
-Lectura: predio_activo_id = request.session.get('predio_activo').
-El sistema filtra el listado de faenas por el predio_activo durante la sesión del usuario.
+| Comando | Descripción |
+| :--- | :--- |
+| `python manage.py makemigrations` | Genera los archivos de migración basados en `models.py`. |
+| `python manage.py migrate` | Aplica todas las migraciones a la base de datos (crea tablas de la app `faenas` y de `auth`). |
+| `python manage.py createsuperuser` | Crea un usuario administrador/de prueba. **(Necesario para el login)** |
 
-Security (seguridad)
-Autenticación obligatoria en vistas de negocio: @login_required en vistas.
-Flujos de login/logout:
-Login: accounts/login/ (vista personalizada o la de Django).
-Logout: método POST (se implementa en template como formulario con {% csrf_token %}).
-CSRF activado por middleware por defecto; cada formulario tiene {% csrf_token %}.
-Cabeceras de seguridad básicas en settings.py:
-X_FRAME_OPTIONS = 'DENY'
-DEBUG = False en producción
-Otros middleware básicos en settings: SecurityMiddleware, CsrfViewMiddleware, AuthenticationMiddleware.
-Recomendación: en producción, usar HTTPS, configurar ALLOWED_HOSTS y revisar SECURE_* settings.
+### 3. Ejecución Local
 
-Configuración de la conexión a la BD SQLite
-En settings.py:
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-No requiere más configuración para desarrollo local.
+| Comando | Descripción |
+| :--- | :--- |
+| `python manage.py runserver` | Inicia el servidor de desarrollo. |
+| **URL de Acceso:** `http://127.0.0.1:8000/` | [cite_start]Te redirigirá al login debido a la autenticación obligatoria. [cite: 8] |
+
+---
+
+## 🔒 Usuario de Prueba
+
+Utilice las credenciales creadas con `createsuperuser` para acceder:
+
+* **Usuario:** `admin`
+* **Contraseña:** `admin123` (o la que se haya definido)
+
+---
+
+## [cite_start]💻 Descripción de la Aplicación y Módulos [cite: 44]
+
+### [cite_start]A. Templates (Django Templates) [cite: 24, 25, 27]
+
+| Módulo | Descripción | Requisitos Aplicados |
+| :--- | :--- | :--- |
+| **Herencia** | `base.html` sirve como plantilla maestra para el layout y la navegación. | [cite_start]Bloques de contenido y herencia de plantilla base. [cite: 25] |
+| **Navegación** | La barra de navegación es visible (`Faenas`, `Predio activo`, `Salir`). | [cite_start]Navegación visible. [cite: 28] |
+| **Formularios** | Todas las plantillas de formularios (`faena_form.html`) contienen `{% csrf_token %}`. | [cite_start]Protección CSRF. [cite: 27] |
+| **Mensajes** | Se usa `django.contrib.messages` para mostrar confirmaciones y errores. | [cite_start]Uso de mensajes de sistema. [cite: 26] |
+
+### [cite_start]B. Models y ORM (Object-Relational Mapping) [cite: 29, 33]
+
+| Módulo | Descripción | Requisitos Aplicados |
+| :--- | :--- | :--- |
+| **Modelos** | `Predio` y `Faena` están definidos en `faenas/models.py`. | [cite_start]Relaciones mínimas. [cite: 21] |
+| **Relaciones** | [cite_start]`Faena` se vincula a `Predio` (obligatorio)[cite: 22]. [cite_start]La asignación a `Operario` (`User`) es opcional[cite: 23]. | [cite_start]Vinculación obligatoria y opcional. [cite: 22, 23] |
+| **ORM** | Todas las operaciones CRUD y consultas (filtros, ordenamiento) se realizan con métodos del ORM de Django (e.g., `Faena.objects.filter(...)`). | [cite_start]Prohibido usar SQL crudo. [cite: 33] |
+| **Validaciones** | Se implementa una validación funcional en `FaenaForm` para asegurar la coherencia de fechas (`fecha_fin` no puede ser anterior a `fecha_inicio`). | [cite_start]Validaciones funcionales documentadas. [cite: 14] |
+
+### [cite_start]C. Sessions (Sesiones) [cite: 16, 18]
+
+| Módulo | Descripción | Requisitos Aplicados |
+| :--- | :--- | :--- |
+| **Predio Activo** | El usuario selecciona un predio en la vista `seleccionar_predio`. El ID se guarda en la sesión: `request.session['predio_activo_id']`. | [cite_start]El usuario debe seleccionar un "Predio activo". [cite: 17] |
+| **Filtrado** | Todas las listas de faenas se filtran automáticamente por el `predio_activo_id` almacenado en la sesión. | [cite_start]El sistema filtra el listado de faenas por el predio activo. [cite: 18] |
+| **Interfaz** | El nombre del predio activo se muestra claramente en el `base.html`. | [cite_start]Muestra claramente el predio activo en la interfaz. [cite: 20] |
+
+### [cite_start]D. Security (Seguridad) [cite: 34, 35, 36, 37]
+
+| Módulo | Descripción | Requisitos Aplicados |
+| :--- | :--- | :--- |
+| **Autenticación** | Las vistas de negocio están protegidas con `@login_required`. | [cite_start]Autenticación para vistas de negocio. [cite: 35] |
+| **CSRF** | El *middleware* está activo, y todos los formularios usan `{% csrf_token %}`. | [cite_start]CSRF activo en formularios. [cite: 36] |
+| **Cabeceras** | Se configura `X_FRAME_OPTIONS = 'DENY'` en `settings.py`. | [cite_start]Ajustes básicos de cabeceras de seguridad. [cite: 37, 38] |
+
+---
+
+## [cite_start]💾 Configuración de la Conexión a BD [cite: 39, 40]
+
+El proyecto está configurado para usar **SQLite** por defecto.
+
+* [cite_start]**Motor:** `django.db.backends.sqlite3` [cite: 40]
+* **Ubicación:** `db.sqlite3` en la raíz del proyecto.
+
+No se requiere ninguna configuración adicional para el entorno de desarrollo local.
