@@ -17,7 +17,6 @@
 * **Gestor de Paquetes:** `pip`
 * **Entorno:** `Virtualenv` (recomendado).
 
-*(El repositorio debe contener el archivo `requirements.txt`.)*
 
 ## 🛠️ Instalación y Ejecución (Windows PowerShell)
 
