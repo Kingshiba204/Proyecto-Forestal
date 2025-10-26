@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Lista de Faenas</h1>
+<a href="{% url 'crear_faena' %}" class="btn btn-primary mb-3">Crear Faena</a>
+<table class="table">
+  <thead><tr><th>Nombre</th><th>Predio</th><th>Fechas</th><th>Acciones</th></tr></thead>
+  <tbody>
+    {% for f in faenas %}
+    <tr>
+      <td>{{ f.nombre }}</td>
+      <td>{{ f.predio }}</td>
+      <td>{{ f.fecha_inicio }} - {{ f.fecha_fin }}</td>
+      <td>
+        <a href="{% url 'detalle_faena' f.pk %}" class="btn btn-sm btn-info">Ver</a>
+        <a href="{% url 'editar_faena' f.pk %}" class="btn btn-sm btn-warning">Editar</a>
+        <a href="{% url 'eliminar_faena' f.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">No hay faenas.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "faenas/base.html" %}
+
+{% block title %}Listado de Faenas{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col">
+        <h2>Listado de Faenas</h2>
+        {% if predio_activo %}
+            <p class="text-muted">Mostrando faenas del predio: {{ predio_activo.nombre }}</p>
+        {% endif %}
+    </div>
+    <div class="col text-end">
+        <a href="{% url 'crear_faena' %}" class="btn btn-primary">Nueva Faena</a>
+    </div>
+</div>
+
+<div class="table-responsive mt-3">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th>Estado</th>
+                <th>Predio</th>
+                <th>Operario</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for faena in faenas %}
+            <tr>
+                <td>{{ faena.nombre }}</td>
+                <td>{{ faena.fecha_inicio }}</td>
+                <td>{{ faena.fecha_fin }}</td>
+                <td>{{ faena.estado }}</td>
+                <td>{{ faena.predio.nombre }}</td>
+                <td>{{ faena.operario_asignado|default:"No asignado" }}</td>
+                <td>
+                    <a href="{% url 'detalle_faena' faena.pk %}" class="btn btn-sm btn-info">Ver</a>
+                    <a href="{% url 'editar_faena' faena.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                    <a href="{% url 'eliminar_faena' faena.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center">No hay faenas registradas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

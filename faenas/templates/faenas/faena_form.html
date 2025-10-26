@@ -1,0 +1,134 @@
+{% extends "faenas/base.html" %}
+
+{% block title %}{% if form.instance.pk %}Editar{% else %}Nueva{% endif %} Faena{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2>{% if form.instance.pk %}Editar{% else %}Nueva{% endif %} Faena</h2>
+            </div>
+            <div class="card-body">
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.nombre.id_for_label }}" class="form-label">{{ form.nombre.label }}</label>
+                            {{ form.nombre.errors }}
+                            <input type="text" class="form-control {% if form.nombre.errors %}is-invalid{% endif %}" 
+                                   id="{{ form.nombre.id_for_label }}" 
+                                   name="{{ form.nombre.name }}"
+                                   value="{{ form.nombre.value|default:'' }}"
+                                   required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.predio.id_for_label }}" class="form-label">{{ form.predio.label }}</label>
+                            {{ form.predio.errors }}
+                            <select class="form-select {% if form.predio.errors %}is-invalid{% endif %}" 
+                                    id="{{ form.predio.id_for_label }}" 
+                                    name="{{ form.predio.name }}"
+                                    required>
+                                <option value="">Seleccione un predio</option>
+                                {% for choice in form.predio.field.queryset %}
+                                    <option value="{{ choice.pk }}" {% if form.predio.value|stringformat:"s" == choice.pk|stringformat:"s" %}selected{% endif %}>
+                                        {{ choice }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.fecha_inicio.id_for_label }}" class="form-label">{{ form.fecha_inicio.label }}</label>
+                            {{ form.fecha_inicio.errors }}
+                            <input type="date" class="form-control {% if form.fecha_inicio.errors %}is-invalid{% endif %}" 
+                                   id="{{ form.fecha_inicio.id_for_label }}" 
+                                   name="{{ form.fecha_inicio.name }}"
+                                   value="{{ form.fecha_inicio.value|date:'Y-m-d'|default:'' }}"
+                                   required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.fecha_fin.id_for_label }}" class="form-label">{{ form.fecha_fin.label }}</label>
+                            {{ form.fecha_fin.errors }}
+                            <input type="date" class="form-control {% if form.fecha_fin.errors %}is-invalid{% endif %}" 
+                                   id="{{ form.fecha_fin.id_for_label }}" 
+                                   name="{{ form.fecha_fin.name }}"
+                                   value="{{ form.fecha_fin.value|date:'Y-m-d'|default:'' }}"
+                                   required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.estado.id_for_label }}" class="form-label">{{ form.estado.label }}</label>
+                            {{ form.estado.errors }}
+                            <select class="form-select {% if form.estado.errors %}is-invalid{% endif %}" 
+                                    id="{{ form.estado.id_for_label }}" 
+                                    name="{{ form.estado.name }}"
+                                    required>
+                                {% for value, label in form.estado.field.choices %}
+                                    <option value="{{ value }}" {% if form.estado.value == value %}selected{% endif %}>
+                                        {{ label }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.operario_asignado.id_for_label }}" class="form-label">{{ form.operario_asignado.label }}</label>
+                            {{ form.operario_asignado.errors }}
+                            <select class="form-select" 
+                                    id="{{ form.operario_asignado.id_for_label }}" 
+                                    name="{{ form.operario_asignado.name }}">
+                                <option value="">Sin asignar</option>
+                                {% for choice in form.operario_asignado.field.queryset %}
+                                    <option value="{{ choice.pk }}" {% if form.operario_asignado.value|stringformat:"s" == choice.pk|stringformat:"s" %}selected{% endif %}>
+                                        {{ choice.get_full_name|default:choice.username }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <a href="{% url 'lista_faenas' %}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+})()
+</script>
+{% endblock %}

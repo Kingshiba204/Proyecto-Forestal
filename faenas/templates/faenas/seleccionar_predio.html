@@ -1,0 +1,40 @@
+{% extends "faenas/base.html" %}
+
+{% block title %}Seleccionar Predio{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Seleccionar Predio Activo</h2>
+            </div>
+            <div class="card-body">
+                {% if predio_activo %}
+                    <div class="alert alert-info">
+                        Predio activo actual: {{ predio_activo.nombre }}
+                    </div>
+                {% endif %}
+
+                <form method="post" class="mt-3">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="predio">Seleccionar nuevo predio:</label>
+                        <select name="predio" id="predio" class="form-control">
+                            <option value="">-- Ningún predio activo --</option>
+                            {% for predio in predios %}
+                                <option value="{{ predio.id }}" {% if predio_activo.id == predio.id %}selected{% endif %}>
+                                    {{ predio.nombre }} ({{ predio.ubicacion }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary">Establecer Predio Activo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

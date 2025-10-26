@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Seleccionar Predio</h1>
+<ul>
+  {% for p in predios %}
+  <li>{{ p.nombre }} - {{ p.ubicacion }}</li>
+  {% empty %}
+  <li>No hay predios.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

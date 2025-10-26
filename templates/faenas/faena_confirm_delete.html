@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Confirmar eliminación</h1>
+<form method="post">{% csrf_token %}
+  <p>¿Eliminar la faena "{{ faena }}"?</p>
+  <button type="submit" class="btn btn-danger">Eliminar</button>
+  <a href="{% url 'lista_faenas' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ faena.nombre }}</h1>
+<p>Predio: {{ faena.predio }}</p>
+<p>Fecha inicio: {{ faena.fecha_inicio }}</p>
+<p>Fecha fin: {{ faena.fecha_fin }}</p>
+<p>Estado: {{ faena.estado }}</p>
+<a href="{% url 'editar_faena' faena.pk %}" class="btn btn-warning">Editar</a>
+{% endblock %}
